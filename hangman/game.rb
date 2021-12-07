@@ -1,43 +1,47 @@
 # frozen_string_literal: true
 
-def welcome
-    puts
-    puts "Welcome to Hangman Game!"
-    puts "What is your name?"
-    name = gets.strip
+require_relative 'ui'
 
-    puts "\n"
-    puts "Lets start, #{name}"
-
-    name
+def ask_a_valid_try (errors, tries, mask)
+    header_tries errors, tries, mask
+    loop do
+        try = ask_a_try
+        
+        if tries.include? try
+            warn_repeated_try
+        else
+            return try
+        end
+    end
 end
+
+
+def get_masked_word (tries, secret_word)
+    mask = ""
+    for letter in secret_word.chars
+        if tries.include? letter
+            mask += letter
+        else
+            mask += '_'
+        end
+        mask += ' '
+    end
+    mask
+end
+
 
 def choose_secret_word
-    puts "Choosing a word..."
+    warn_choosing_a_word
 
-    secret_word = "programador"
-    puts "Choosed word with #{secret_word.size} letters... Good luck!"
-    puts "\n\n"
+    text = File.read('words.txt')
+    words = text.split("\n")
+
+    random_number = rand(words.size)
+    secret_word = words[random_number].downcase
+
+    warn_choosed_secret_word secret_word
 
     secret_word
-end
-
-
-def dont_wants_play_again?
-	puts "Do you want to play again? (Y/n)"
-	answer = gets.strip
-	puts
-	dont_wants = answer.upcase == "N"
-end
-
-
-def ask_a_try (errors, tries)
-    puts
-    puts "Total of errors: #{errors}"
-    puts "You already try: #{tries.to_s}"
-    puts "\nEnter with a word or a letter: "
-    
-    input = gets.strip
 end
 
 
@@ -49,10 +53,11 @@ def play (name)
     total_points = 0
 
     while errors < 5
-        try = ask_a_try errors, tries
+        mask = get_masked_word tries, secret_word
+        try = ask_a_valid_try errors, tries, mask
 
         if tries.include? try
-            puts "\nYou already try this one! ⚠️"
+            warn_repeated_try
             next
         end
 
@@ -64,36 +69,35 @@ def play (name)
             letter_count = secret_word.count try
             
             if letter_count == 0
-                puts "\nLetter not found! ⚠️"
+                warn_letter_not_found
                 errors += 1
             else
-                puts "\nLetter found #{letter_count} times! ✔️"
+                warn_letter_found letter_count
             end
         else
             correct = try == secret_word
             if correct
                 total_points += 100
-                puts "\nCongratulations! You got this! ✔️🎉🥳🎈✔️"
+                warn_word_right
                 break
             else
                 total_points -= 30
-                puts "\nYou missed! ❌"
+                warn_word_wrong
                 errors += 1
             end
         end
     end
 
-    puts "#{name} => Total #{total_points} points!"
-    puts
+    show_points name, total_points
 end
 
 
-# main
+def hangman_play
+    name = welcome
 
-name = welcome
+    loop do
+        play name
 
-loop do
-    play name
-
-    break if dont_wants_play_again?
+        break if dont_wants_play_again?
+    end
 end

@@ -143,6 +143,8 @@ def finish_game (wins_count, plays_count)
 end
 
 
+# main
+
 name = welcome
 
 wins_count = 0
