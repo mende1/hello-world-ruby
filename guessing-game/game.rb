@@ -1,147 +1,140 @@
 # frozen_string_literal: true
 
 def welcome
-	puts 'What is your name?'
-	
-	name = gets.strip
-	
-	puts "\nWelcome, #{name}, to the Gessing Game!"
+  puts "What is your name?"
 
-	name
+  name = gets.strip
+
+  puts "\nWelcome, #{name}, to the Gessing Game!"
+
+  name
 end
-
 
 def choose_difficulty
-	puts "Choose the difficulty:"
-	puts "(1) Very Easy  (2) Easy  (3) Normal  (4) Hard  (5) Very Hard"
+  puts "Choose the difficulty:"
+  puts "(1) Very Easy  (2) Easy  (3) Normal  (4) Hard  (5) Very Hard"
 
-	difficulty = gets.to_i
+  difficulty = gets.to_i
 end
 
+def get_secret_number(difficulty)
+  case difficulty
+  when 1
+    maximum = 30
+  when 2
+    maximum = 60
+  when 3
+    maximum = 100
+  when 4
+    maximum = 150
+  when 5
+    maximum = 200
+  end
 
-def get_secret_number (difficulty)
-	case difficulty
-	when 1
-		maximum = 30
-	when 2
-		maximum = 60
-	when 3
-		maximum = 100
-	when 4
-		maximum = 150
-	when 5
-		maximum = 200
-	end
-
-	puts "\nGuess a number between 1 and #{maximum}"
-	random = rand(maximum) + 1
+  puts "\nGuess a number between 1 and #{maximum}"
+  random = rand(maximum) + 1
 end
 
+def ask_a_number(tries, attempt)
+  puts "\nYou already try: #{tries.to_s}"
+  puts "Attempt ##{attempt.to_s}:"
 
-def ask_a_number (tries, attempt)
-	puts "\nYou already try: #{tries.to_s}"
-	puts "Attempt ##{attempt.to_s}:"
-	
-	number = gets.strip
+  number = gets.strip
 
-	number.to_i
+  number.to_i
 end
 
+def check_equality(secret, guess)
+  equals = guess == secret
 
-def check_equality (secret, guess)
-	equals = guess == secret
+  puts
 
-	puts
+  if equals
+    puts "You got this! ✔️"
+    return true
+  end
 
-	if equals
-		puts 'You got this! ✔️'
-		return true
-	end
-
-	greater = guess > secret
-	if guess > secret
-		puts 'The secret number are lesser! <'
-	else
-		puts 'The secret number are greater! >'
-	end
-	false
+  greater = guess > secret
+  if guess > secret
+    puts "The secret number are lesser! <"
+  else
+    puts "The secret number are greater! >"
+  end
+  false
 end
 
 def dont_wants_play_again?
-	puts "Do you want to play again? (Y/n)"
-	ans = gets.strip
-	puts
-	dont_wants = ans.upcase == "N"
+  puts "Do you want to play again? (Y/n)"
+  ans = gets.strip
+  puts
+  dont_wants = ans.upcase == "N"
 end
 
+def play(name)
+  limit = 5
 
-def play (name)
-	limit = 5
+  difficulty = choose_difficulty
+  secret = get_secret_number difficulty
+  puts secret
 
-	difficulty = choose_difficulty
-	secret = get_secret_number difficulty
-	puts secret
+  tries = []
 
-	tries = []
+  total_points = 1000
 
-	total_points = 1000
+  for round in 1..limit
+    guess = ask_a_number tries, round
 
-	for round in 1..limit
-		guess = ask_a_number tries, round
+    while tries.include? guess
+      puts "You already try this number! ⚠️"
+      guess = ask_a_number tries, round
+    end
 
-		while tries.include? guess
-			puts "You already try this number! ⚠️"
-			guess = ask_a_number tries, round
-		end
+    total_points -= (secret - guess).abs / 2.0
 
-		total_points -= (secret - guess).abs / 2.0
+    tries << guess
 
-		tries << guess
+    if name == "Mendel"
+      puts "\nYou got this! ✔️"
+      win = true
+      break
+    end
 
-		if name == "Mendel"
-			puts "\nYou got this! ✔️"
-			win = true
-			break
-		end
-		
-		if check_equality secret, guess
-			win = true
-			break
-		end
+    if check_equality secret, guess
+      win = true
+      break
+    end
 
-		if limit == round
-			if (secret-guess).abs == 1
-				puts "You wrong by 1. Have a last chance. Try again!"
-				guess = ask_a_number tries, "Last Chance"
-				total_points -= (secret - guess).abs / 2.0
-				if check_equality secret, guess
-					win = true
-					break
-				end
-			end
-		end
-	end
+    if limit == round
+      if (secret - guess).abs == 1
+        puts "You wrong by 1. Have a last chance. Try again!"
+        guess = ask_a_number tries, "Last Chance"
+        total_points -= (secret - guess).abs / 2.0
+        if check_equality secret, guess
+          win = true
+          break
+        end
+      end
+    end
+  end
 
-	if win
-		puts "#{name} => Total #{total_points} points!"
-		puts
-	else	
-		puts "\nYou lose! ❌"
-		puts
-	end
+  if win
+    puts "#{name} => Total #{total_points} points!"
+    puts
+  else
+    puts "\nYou lose! ❌"
+    puts
+  end
 
-	win
+  win
 end
 
+def finish_game(wins_count, plays_count)
+  wins_percent = (wins_count / plays_count.to_f) * 100
 
-def finish_game (wins_count, plays_count)
-	wins_percent = (wins_count / plays_count.to_f) * 100
-	
-	puts "You got #{wins_count} wins out of #{plays_count} plays!"
-	puts "Total #{wins_percent}% of wins!"
-	puts
+  puts "You got #{wins_count} wins out of #{plays_count} plays!"
+  puts "Total #{wins_percent}% of wins!"
+  puts
 end
-
 
 # main
 
@@ -151,12 +144,12 @@ wins_count = 0
 plays_count = 0
 
 loop do
-	plays_count += 1
-	win = play name
+  plays_count += 1
+  win = play name
 
-	wins_count += 1 if win
+  wins_count += 1 if win
 
-	break if dont_wants_play_again?
+  break if dont_wants_play_again?
 end
 
 finish_game wins_count, plays_count

@@ -1,3 +1,3 @@
-require_relative 'game'
+require_relative "game"
 
 hangman_play
