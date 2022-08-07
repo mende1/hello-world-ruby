@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 def welcome
-  puts "What is your name?"
+  puts 'What is your name?'
 
   name = gets.strip
 
@@ -11,10 +11,10 @@ def welcome
 end
 
 def choose_difficulty
-  puts "Choose the difficulty:"
-  puts "(1) Very Easy  (2) Easy  (3) Normal  (4) Hard  (5) Very Hard"
+  puts 'Choose the difficulty:'
+  puts '(1) Very Easy  (2) Easy  (3) Normal  (4) Hard  (5) Very Hard'
 
-  difficulty = gets.to_i
+  gets.to_i
 end
 
 def get_secret_number(difficulty)
@@ -32,12 +32,12 @@ def get_secret_number(difficulty)
   end
 
   puts "\nGuess a number between 1 and #{maximum}"
-  random = rand(maximum) + 1
+  rand(maximum) + 1
 end
 
 def ask_a_number(tries, attempt)
-  puts "\nYou already try: #{tries.to_s}"
-  puts "Attempt ##{attempt.to_s}:"
+  puts "\nYou already try: #{tries}"
+  puts "Attempt ##{attempt}:"
 
   number = gets.strip
 
@@ -50,42 +50,41 @@ def check_equality(secret, guess)
   puts
 
   if equals
-    puts "You got this! ✔️"
+    puts 'You got this! ✔️'
     return true
   end
 
-  greater = guess > secret
   if guess > secret
-    puts "The secret number are lesser! <"
+    puts 'The secret number are lesser! <'
   else
-    puts "The secret number are greater! >"
+    puts 'The secret number are greater! >'
   end
   false
 end
 
 def dont_wants_play_again?
-  puts "Do you want to play again? (Y/n)"
+  puts 'Do you want to play again? (Y/n)'
   ans = gets.strip
   puts
-  dont_wants = ans.upcase == "N"
+  ans.upcase == 'N'
 end
 
 def play(name)
   limit = 5
+  win = false
 
   difficulty = choose_difficulty
   secret = get_secret_number difficulty
-  puts secret
 
   tries = []
 
   total_points = 1000
 
-  for round in 1..limit
+  (1..limit).each do |round|
     guess = ask_a_number tries, round
 
     while tries.include? guess
-      puts "You already try this number! ⚠️"
+      puts 'You already try this number! ⚠️'
       guess = ask_a_number tries, round
     end
 
@@ -93,7 +92,7 @@ def play(name)
 
     tries << guess
 
-    if name == "Mendel"
+    if name == 'Mendel'
       puts "\nYou got this! ✔️"
       win = true
       break
@@ -104,26 +103,24 @@ def play(name)
       break
     end
 
-    if limit == round
-      if (secret - guess).abs == 1
-        puts "You wrong by 1. Have a last chance. Try again!"
-        guess = ask_a_number tries, "Last Chance"
-        total_points -= (secret - guess).abs / 2.0
-        if check_equality secret, guess
-          win = true
-          break
-        end
-      end
+    next unless limit == round && ((secret - guess).abs == 1)
+
+    puts 'You wrong by 1. Have a last chance. Try again!'
+    guess = ask_a_number tries, 'Last Chance'
+    total_points -= (secret - guess).abs / 2.0
+    if check_equality secret, guess
+      win = true
+      break
     end
   end
 
   if win
     puts "#{name} => Total #{total_points} points!"
-    puts
   else
     puts "\nYou lose! ❌"
-    puts
   end
+
+  puts
 
   win
 end
