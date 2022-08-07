@@ -6,8 +6,8 @@
 
 def pares2a50
   ans = []
-  [2..50].each do |val|
-    ans << val if val.even?
+  [2..50].each do |value|
+    ans << value if value.even?
   end
   puts "\nTodos os números pares entre 2 e 50:\n#{ans}\n\n"
 end
@@ -37,8 +37,8 @@ def tabuada
   num = gets.to_i
 
   puts
-  [1..10].each do |val|
-    res = val * num
+  [1..10].each do |value|
+    res = value * num
     puts "#{num} * #{val} = #{res}"
   end
   puts

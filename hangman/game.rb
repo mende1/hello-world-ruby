@@ -1,29 +1,27 @@
 # frozen_string_literal: true
 
-require_relative "ui"
+require_relative 'ui'
 
 def ask_a_valid_try(errors, tries, mask)
   header_tries errors, tries, mask
   loop do
     try = ask_a_try
 
-    if tries.include? try
-      warn_repeated_try
-    else
-      return try
-    end
+    return try unless tries.include? try
+
+    warn_repeated_try
   end
 end
 
 def get_masked_word(tries, secret_word)
-  mask = ""
-  for letter in secret_word.chars
-    if tries.include? letter
-      mask += letter
-    else
-      mask += "_"
-    end
-    mask += " "
+  mask = ''
+  secret_word.chars.each do |letter|
+    mask += if tries.include? letter
+              letter
+            else
+              '_'
+            end
+    mask += ' '
   end
   mask
 end
@@ -31,7 +29,7 @@ end
 def choose_secret_word
   warn_choosing_a_word
 
-  text = File.read("words.txt")
+  text = File.read('words.txt')
   words = text.split("\n")
 
   random_number = rand(words.size)
@@ -64,7 +62,7 @@ def play(name)
     if tried_only_one_letter
       letter_count = secret_word.count try
 
-      if letter_count == 0
+      if letter_count.zero?
         warn_letter_not_found
         errors += 1
       else

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def welcome
   puts
   puts 'Welcome to Hangman Game!'
@@ -22,13 +24,13 @@ def dont_wants_play_again?
   puts 'Do you want to play again? (Y/n)'
   answer = gets.strip
   puts
-  dont_wants = answer.upcase == 'N'
+  answer.upcase == 'N'
 end
 
 def ask_a_try
   puts "\nEnter with a word or a letter: "
 
-  input = gets.strip.downcase
+  gets.strip.downcase
 end
 
 def warn_choosing_a_word
