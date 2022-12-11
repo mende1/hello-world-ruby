@@ -12,8 +12,37 @@ def welcome
   name
 end
 
+def print_forca(errors)
+  head = '   '
+  body = ' '
+  legs = '   '
+  arms = '   '
+
+  errors >= 1 && head = '(_)'
+
+  if errors >= 2
+    arms = ' | '
+    body = ' | '
+  end
+
+  errors >= 3 && arms = '\\|/'
+
+  errors >= 4 && legs = '/ \\'
+
+  puts '  _______       '
+  puts ' |/      |      '
+  puts " |      #{head}       "
+  puts " |      #{arms}       "
+  puts " |      #{body}       "
+  puts " |      #{legs}       "
+  puts ' |              '
+  puts '_|_             '
+  puts
+end
+
 def header_tries(errors, tries, mask)
   puts
+  print_forca errors
   puts "Secret word: #{mask}"
   puts
   puts "Total of errors: #{errors}"
@@ -55,7 +84,7 @@ def warn_letter_found(letter_count)
 end
 
 def warn_word_right
-  puts "\nCongratulations! You got this! ️🎉🥳🎈✔️"
+  puts "\nCongratulations! You got this!"
 end
 
 def warn_word_wrong
@@ -63,6 +92,14 @@ def warn_word_wrong
 end
 
 def show_points(name, points)
-  puts "#{name} => Total #{points} points!"
+  puts "#{name} => #{points} points!"
   puts
+end
+
+def show_total_points(name, total_points)
+  puts "Total points (#{name}) => #{total_points} points"
+end
+
+def show_current_champion(data)
+  puts "Our current Champion is #{data[0]} with #{data[1]} points!\n\n"
 end
