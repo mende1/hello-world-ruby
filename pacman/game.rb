@@ -1,13 +1,9 @@
 require_relative 'ui'
+require_relative 'hero'
 
 def start_game
   name = welcome
   play name
-end
-
-def game_over
-  puts "\n\n\n\n\n\n"
-  puts "Game Over"
 end
 
 def read_map(number)
@@ -27,25 +23,15 @@ def find_player(map)
     hero_column = current_line.index hero
 
     if hero_column
-      return [line, hero_column]
+      hero = Hero.new
+      hero.line = line
+      hero.column = hero_column
+      
+      return hero
     end
   end
 
   nil
-end
-
-def define_new_player_position(hero, direction)
-  hero = hero.dup
-  movements = {
-    "W" => [-1, 0],
-    "S" => [1, 0],
-    "A" => [0, -1],
-    "D" => [0, 1],
-  }
-  movement = movements[direction]
-  hero[0] += movement[0]
-  hero[1] += movement[1]
-  hero
 end
 
 def is_valid_position?(map, position)
@@ -126,16 +112,16 @@ def play(name)
   while true
     draw map
     direction = ask_for_direction.upcase
-    hero = find_player map
     
-    new_position = define_new_player_position hero, direction
+    hero = find_player map
+    new_position = hero.define_new_player_position direction
 
-    if !is_valid_position? map, new_position
+    if !is_valid_position? map, new_position.to_array
       next
     end
     
-    map[hero[0]][hero[1]] = " "
-    map[new_position[0]][new_position[1]] = "H"
+    hero.self_remove map
+    new_position.self_add map
 
     map = move_ghosts map
 

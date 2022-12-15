@@ -7,6 +7,11 @@ def welcome
   name
 end
 
+def game_over
+  puts "\n\n\n\n\n\n"
+  puts "Game Over"
+end
+
 def ask_for_direction
   puts "Where do you want to go?"
   direction = gets.strip
