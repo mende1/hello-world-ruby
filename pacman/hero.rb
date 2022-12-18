@@ -26,4 +26,20 @@ class Hero
   def self_add(map)
     map[line][column] = 'H'
   end
+
+  def right
+    define_new_player_position 'D'
+  end
+
+  def left
+    define_new_player_position 'A'
+  end
+
+  def up
+    define_new_player_position 'W'
+  end
+
+  def down
+    define_new_player_position 'S'
+  end
 end

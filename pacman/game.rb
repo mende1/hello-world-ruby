@@ -34,7 +34,7 @@ def find_player(map)
   nil
 end
 
-def is_valid_position?(map, position)
+def valid_position?(map, position)
   lines = map.size
   columns = map[0].size
 
@@ -97,8 +97,24 @@ def player_loses?(map)
   !find_player(map)
 end
 
+def remove_from_until(map, position, amount)
+  return unless amount.positive?
+
+  execute_removal map, position.right, amount
+  execute_removal map, position.left, amount
+  execute_removal map, position.up, amount
+  execute_removal map, position.down, amount
+end
+
+def execute_removal(map, position, amount)
+  return if map[position.line][position.column] == 'X'
+
+  map[position.line][position.column] = ' '
+  remove_from_until map, position, amount - 1
+end
+
 def play(_name)
-  map = read_map(2)
+  map = read_map(4)
   Kernel.loop do
     draw map
     direction = ask_for_direction.upcase
@@ -109,6 +125,7 @@ def play(_name)
     next unless valid_position? map, new_position.to_array
 
     hero.self_remove map
+    remove_from_until(map, new_position, 4) if map[new_position.line][new_position.column] == '*'
     new_position.self_add map
 
     map = move_ghosts map
